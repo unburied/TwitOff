@@ -1,11 +1,11 @@
-"""Get and load user and tweet data into db"""
+"""load user and tweet data into db"""
 
 import pickle
 from .twitter import *
 
-def get_user(user_name, cache=None): 
+def load_user(user_name, cache=None): 
     # check if user data cached to improve tweet fetching and basilica performance
-    user_pickle = pickel.dumps(user_name)
+    user_pickle = pickle.dumps(user_name)
 
     if cache and cache.exists(user_pickle):       
         u = pickle.loads(cache.get(user_pickle))
@@ -47,9 +47,9 @@ def user_data(user_name):
 
     data['id'] = twitter_user.id
     data['name'] = twitter_user.screen_name
-    data['nt_id'] = newest_tweet_id=tweets[0].id
     data['tweets'] = twitter_user.timeline(count=200, exclude_replies=True,
                                     include_rts=False, tweet_mode='extended')
+    data['nt_id'] = newest_tweet_id=data['tweets'][0].id
     data['tweet_bucket'] = [] # for caching
     
     return data
@@ -59,8 +59,8 @@ def tweet_data(tweet):
     data = {}
     data['t_id'] = tweet.id
     data['text'] = tweet.full_text[:500]
-    data['embedding']] = BASILICA.embed_sentence(tweet.full_text, model='twitter')
+    data['embedding'] = BASILICA.embed_sentence(tweet.full_text, model='twitter')
 
     return data
 
-
+"""I didnt time it before the changes, but I think it saves a few seconds"""
