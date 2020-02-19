@@ -10,6 +10,7 @@ class User(DB.Model):
     id = DB.Column(DB.BigInteger, primary_key=True)
     name = DB.Column(DB.String(15), nullable=False)
     newest_tweet_id = DB.Column(DB.BigInteger)
+    
     def __repr__(self):
         return f'<User {self.name}>'
 
